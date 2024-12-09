@@ -3,11 +3,10 @@
 Nesta práctica configurei duás páxinas webs, fabulasmaravillosas e fabulas oscuras, a unha mesma dirección ip do meu DNS, onde os arquivos son os seguintes:
 
 ## Docker-compose.yml
-Neste arquivo temos dous servicios, a das páxinas webs e o do servidor DNS, e ademáis definimos a red.
-
+Neste arquivo definimos dous servizos: un para as páxinas web e outro para o servidor DNS. Tamén configuramos a rede.
 ### Web
 
-Nesta parte temos definido a imaxe, neste caso php, o nome do servidor, o porto que empregaremos, que sera o 80, os volumes que máis adiante configuramos e a red, que a chamei apared.
+No apartado web, definimos a imaxe (neste caso, php), o nome do servidor, o porto (que será o 80), os volumes que configuraremos máis adiante, e a rede (que chamei apared).
 ```
 web:
     image: php:7.4-apache
@@ -24,7 +23,7 @@ web:
 
 ### DNS
 
-Igual que nas anteriores prácticas, configuramos a imaxe, os volumes que configuraremos máis adiante, o porto que empregaremos e a red, que ten que ser a mesma pero cunha ip distinta.
+Neste apartado, configuramos a imaxe, os volumes que tamén configuraremos máis adiante, o porto (51 para o servidor DNS), e a rede, que debe ser a mesma pero cunha IP distinta.
 
 ```
 dns:
@@ -41,7 +40,7 @@ dns:
 ```
 ### Red
 
-Neste apartado do documento debemos definir a red que imos empregar, a que chamamos apared, en modo bridge.
+Definimos a rede que usaremos, chamada apared, en modo bridge.
 
 ```
 networks:
@@ -55,11 +54,10 @@ networks:
 
 ## confApache
 
-Esta carpeta podemola descargar da axuda que temos de ti na aula virtual, onde so debemos engadir dous ficheiros na carpeta "sites-available" pero o importante é na carpeta "sites-enable". Este dous ficheiros son os mismos para ambas carpeta. Tamén, no caso de querer empregar varios portos, debemos engadir no ficheiro "ports.conf" a liña `listen 8000`. Os ficheiros que engadiremos as carpetas son os seguintes: 
-
+A carpeta confApache pódese descargar da axuda na aula virtual. Só teremos que engadir dous ficheiros nas carpetas sites-available e sites-enabled. Os ficheiros nas dúas carpetas deben ser os mesmos. Se desexamos usar varios portos, engadimos a liña `listen 8000` no ficheiro ports.conf. Os ficheiros que engadimos son os seguintes:
 ### fabulasmaravillosas.conf
 
-Neste arquivo debemos chamar ao porto 80 e configurar o seguinte: decir quen vai ser o admin, un correo xeralemnte; o nome e alias da nosa páxina web chamada fabulasmaravillosas, que será o que buscaremos no navegador para ver a nosa páxina; e o ruta onde teremos o noso index.html, que no meu caso teñoa creada nesa ruta.
+Neste arquivo configuramos o servidor para o sitio "fabulasmaravillosas", indicando o porto 80, o correo do administrador, o nome do servidor e o alias, así como a ruta onde se atopa o ficheiro index.html.
 
 ```
 <VirtualHost *:80>
@@ -72,7 +70,7 @@ Neste arquivo debemos chamar ao porto 80 e configurar o seguinte: decir quen vai
 
 ### fabulasoscuras.conf
 
-Neste arquivo faremos o mesmo que no anterior, só que adaptandoo a esta páxina web, chamada fabulasoscuras.
+Neste arquivo configuramos o servidor para o sitio "fabulasoscuras", de maneira similar ao anterior, pero adaptado a esta páxina web.
 
 ```
 <VirtualHost *:80>
@@ -85,11 +83,11 @@ Neste arquivo faremos o mesmo que no anterior, só que adaptandoo a esta páxina
 
 ## confDNS
 
-Nesta carpeta debemos configurar dúass cousas, a configuración, e as zonas, no meu caso empreguei unha única zona.
+Nesta carpeta debemos configurar dúas cousas: a configuración e as zonas. No meu caso empreguei unha única zona.
 
 ### zonas
 
-Nesta carpeta debemos que ter o documento **db.nome.int** , que no meu caso o nome é asircastelao. Dentro deste documento, primero debemos empregar o servidor de nomes principal, no meu caso ns.asircastelao.int, e un correo de contacto; declaramos un rexistro NS que indica o servidor de nomes autoritativos para o dominio, neste caso ns.asircastelao.int; asociamos o nome do servidor á dirección IP do dns, no meu caso 172.39.4.3; e asociamos as páxinas webs a dirección IP da nosa web que definimos no docker-compose.yml, neste caso 172.39.4.2
+O ficheiro db.nome.int contén a configuración da zona. Neste caso, o nome é asircastelao. Definimos o servidor de nomes principal ns.asircastelao.int e un correo de contacto, e tamén asociamos os nomes das páxinas web ás respectivas IPs.
 
 
 
@@ -111,7 +109,7 @@ fabulasmaravillosas     IN      A       172.39.4.2  # páxina asociada a IP
 
 ### conf
 
-Nesta carpeta debemos ter al menos tres documentos. O primerio de todos é o **named.conf.local**, onde debemos chamar ao arquivo da zona, indicando o tipo e a ruta:
+Nesta carpeta debe haber polo menos tres ficheiros. O primeiro é named.conf.local, onde definimos a zona e indicamos o tipo e a ruta do arquivo da zona:
 
 ```
 zone "asircastelao.int" {
@@ -123,7 +121,7 @@ zone "asircastelao.int" {
 };
 ```
 
-O seguinte documento é **named.conf.options** onde primeiro indicamos o directorio, os forwarders como o de google, e outras opcións como a resolucion recursiva, permitir consultas e escoitar todas as interfaces:
+O seguinte ficheiro é named.conf.options, onde especificamos o directorio, os forwarders (como os de Google), e outras opcións como a resolución recursiva e a permisividade de consultas.
 
 ```
 options {
@@ -139,14 +137,16 @@ options {
     listen-on-v6 { any; };
 };
 ```
-O último documento é **named.conf** onde simplemente enlazamos os dous documentos anteriores, aunque poderíams facer os dous documentos anteriores neste.
+O último ficheiro é named.conf, onde simplemente enlazamos os dous ficheiros anteriores. Tamén poderiamos incluílos directamente neste ficheiro.
 
 ```
 include "/etc/bind/named.conf.options";
 include "/etc/bind/named.conf.local";
 ```
 
-Ademáis teño outro documento chamado **named.conf.default-zones** onde teño definido as zoas inversas.
+Tamén teño un ficheiro chamado named.conf.default-zones, onde configuro as zonas inversas.
+
+
 
 ```
 // prime the server with knowledge of the root servers
@@ -181,27 +181,31 @@ zone "255.in-addr.arpa" {
 
 ## www
 
-Nesta carpeta teremos outras dúas carpetas, chamadas exactemente que as páxinas e a ruta que nos documentos de configuración de apache, é decir, no meu caso unha carpeta chamada **fabulasmaravillosas** e outra carpeta chamada **fabulasocuras**. Dentro de cada carpeta, debemos ter os documentos index.html de cada páxina web.
+Na carpeta www teremos dúas subcarpetas, chamadas fabulasmaravillosas e fabulasoscuras. Dentro de cada unha delas, teremos o ficheiro index.html correspondente a cada páxina web. Como se observou no ficheiro docker-compose.yml, empregamos a ruta /var/www/ para enlazar os index.html, e para iso usaremos os seguintes comandos:
+```
+sudo mkdir /var/www/fabulasmaravillosas
+sudo nano /var/www/fabulasmaravillosas/index.html
+```
 
-No meu caso, como se observou no documento docker-compose.yml, empreguei a ruta /var/www/ para enlazar os index.html, entonces empreguei os comandos `sudo mkdir /var/www/fabulasmaravillosas` e `sudo nano /var/www/fabulasmaravillosas/index.html`,onde escribín o documento html. Estos mesmos comandos repítense para a páxina fabulasoscuras.
+Os mesmos pasos deben repetirse para a páxina fabulasoscuras.
 
-No caso de que á hora de crear as carpetas non te deixa xa que non tes apache descargado, facer os seguintes pasos: instalar apache2 co comando `sudo apt install apache2`,  e cambiar a configuración do firewall cos comandos `sudo ufw allow 'Apache'`, e por ultimo reiniciamos co comando `sudo systemctl restart apache2`
+Se ao crear as carpetas non nos deixa, pode ser porque apache2 non está instalado. Para isto, usamos o comando sudo apt install apache2, cambiamos a configuración do firewall con sudo ufw allow 'Apache', e reiniciamos co comando sudo systemctl restart apache2.
 
 ## configuracions extras
 
-Además de todos os pasos anteriores, debemos realizar uns cambios na nosa máquina, o primeiro será entrar nun documento co comando `sudo nano /etc/systemd/resolved.conf` onde debemos de buscar a liña do DNS e descomentala, e temos que añadir a dirección IP do noso DNS que configuramos e o porto que empregamos, no meu caso :
+Ademais dos pasos anteriores, debemos realizar algúns cambios na nosa máquina. Primeiro, debemos editar o ficheiro /etc/systemd/resolved.conf co comando sudo nano /etc/systemd/resolved.conf e descomentar a liña do DNS, engadindo a IP do noso servidor DNS e o porto correspondente:
 
 ```
 DNS=172.39.4.3#51
 ```
 
-Agora debemos gardar os cambios co comando `sudo systemctl restart systemd-resolved`.
+Despois, gardamos os cambios co comando sudo systemctl restart systemd-resolved.
 
-Unha vez feito, debemos entrar na confiugaración de red da nosa máquina, e se vamos ao apartado de IPv4, debemos desactivar a opción de DNS automático, e por último reiniciar a nosa máquina
+Finalmente, debemos acceder á configuración de rede da nosa máquina, desactivar a opción de DNS automático na sección de IPv4, e reiniciar o equipo.
 
 ## comprobación
 
-Unha vez realizado todos os pasos, lanzaremos o comando `docker compose up´, e se vamos ao navegador e buscamos o alias dunha das páxinas, no meu caso **www.fabulasmaravillosas.asircastelao.int** ou **www.fabulasoscuras.danielcastelao,int**, podremos observar o html que fixemos.
+Unha vez feitos todos os pasos, lanzamos o comando docker compose up e, se todo está correctamente configurado, podemos acceder ás nosas páxinas web no navegador, por exemplo, en www.fabulasmaravillosas.asircastelao.int ou www.fabulasoscuras.asircastelao.int, e ver o contido dos ficheiros index.html.
 
-No caso de que ao lanzar o `docker compose up` da erro, pode ser porque estará apache2 iniciado, entón lanzaremos o comando `sudo systemctl stop apache2`.
+Se ao lanzar docker compose up aparece un erro, pode ser porque apache2 xa está en funcionamento, así que debemos paralo co comando sudo systemctl stop apache2.
 

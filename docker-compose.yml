@@ -8,7 +8,7 @@ services:
       - ./www:/var/www
       - ./confApache:/etc/apache2
     networks:
-      apared:
+      apachered:
         ipv4_address: 172.39.4.2
 
   dns:
@@ -24,7 +24,7 @@ services:
         ipv4_address: 172.39.4.3
 
 networks:
-  apared:
+  apachered:
     driver: bridge
     ipam:
       driver: default

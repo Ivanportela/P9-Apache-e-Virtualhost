@@ -40,11 +40,11 @@ dns:
 ```
 ### Red
 
-Definimos a rede que usaremos, chamada apared, en modo bridge.
+Definimos a rede que usaremos, chamada apachered, en modo bridge.
 
 ```
 networks:
-  apared:
+  apachered:
     driver: bridge
     ipam:
       driver: default
